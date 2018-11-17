@@ -5,26 +5,30 @@ class Game
   attr_reader :current_player, :fragment, :dictionary # keep :dict for now, maybe take out when playing
   attr_writer :fragment # just for debuggin, get rid of this for final
 
-  def initialize(player1, player2)
-    @player1 = Player.new(player1)
-    @player2 = Player.new(player2)
+  # def initialize(player1, player2)
+  def initialize(players)
+    # @player1 = Player.new(player1)
+    # @player2 = Player.new(player2)
+    @players = []
+    players.each_with_index do |player, i|
+      @players << Player.new(player)
+    end
     # maybe make @players array for for than 2 players and iterate through to get next player
-    @current_player = @player1
-    @previous_player = @player2 # maybe don't need, will keep for now for multiplayer possibility
+    @current_player = @players[0]
+    @previous_player = @players[1] # maybe don't need, will keep for now for multiplayer possibility
     @fragment = ""
     @dictionary = Set[]
     File.foreach("dictionary.txt") { |line| @dictionary.add(line.chomp) }
-    @losses = { @player1.name => @player1.losses, @player2.name => @player2.losses }
+    # @losses = { @player1.name => @player1.losses, @player2.name => @player2.losses }
+    @losses = {}
+    @players.each do |player|
+      @losses[player.name] = player.losses
+    end
   end
 
   def next_player!
-    if @current_player == @player1
-      @current_player = @player2
-      @previous_player = @player1
-    else
-      @current_player = @player1
-      @previous_player = @player2
-    end
+    cur_idx = @players.index(@current_player)
+    @current_player = @players[(cur_idx + 1) % @players.length]
   end
 
   def take_turn(player)

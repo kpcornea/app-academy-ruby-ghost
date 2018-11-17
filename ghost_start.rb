@@ -1,13 +1,21 @@
 require_relative "player"
 require_relative "game"
 
-puts "player1's name?"
-player1 = gets.chomp
-puts "player2's name?"
-player2 = gets.chomp
+players = []
+i = 1
+done = false
 
+until done
+  puts "player#{i}'s name?"
+  player = gets.chomp
+  players << player
+  puts "is that it? Enter y or n"
+  answer = gets.chomp
+  done = true if answer == "y"
+  i += 1
+end
 
-ghost = Game.new(player1, player2)
+ghost = Game.new(players)
 # p ghost
 until ghost.over?
   ghost.play_round
