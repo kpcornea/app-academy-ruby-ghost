@@ -7,6 +7,14 @@ class Player
     @wins = 0
   end
 
+  def guess
+
+  end
+
+  def alert_invalid_guess
+
+  end
+
   def lost
     @losses += 1
     puts "dam you suck :c"
@@ -16,5 +24,5 @@ class Player
     @wins += 1
     puts "wow the other player must feel bad c:"
   end
-  end
+  
 end

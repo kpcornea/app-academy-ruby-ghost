@@ -1,18 +1,18 @@
 require_relative "player"
-require_relative "dictionary"
+require "set"
+# require_relative "dictionary"
 
 class Game
   attr_reader :current_player, :fragment
-
 
   def initialize(player1, player2)
     @player1 = Player.new(player1)
     @player2 = Player.new(player2)
     # maybe make @players array for for than 2 players and iterate through to get next player
     @current_player = @player1
-    # @secret_word = "abasement" # set it from text file randomly, o its until we spell any word in dict
     @fragment = ""
-    @dictionary =  Hash.new # use a hash or set Hash.new or probs Set.new to store from text file
+    @dictionary = Set[]
+    File.foreach("dictionary.txt") { |line| @dictionary.add(line.chomp) }
   end
 
   # def current_player
@@ -32,7 +32,7 @@ class Game
   end
 
   def take_turn(player)
-    guess = gets.chomp
+    guess = gets.chomp # switch to Player class?
     if valid_play?(guess)
       @fragment += guess
       return true
@@ -42,14 +42,14 @@ class Game
 
   def valid_play?(str)
     alphabet = ("a".."z")
-    if alphabet.include?(str) && @dictionary. # words we can spell after adding it to fragment, think i need array lookup for this one
+    if alphabet.include?(str) && @dictionary # words we can spell after adding it to fragment, think i need array lookup for this one
       return true
     end
     false
   end
 
   def match?(str)
-    @dictionary.key?(str)
+    @dictionary === str
   end
 
   # def play_round
