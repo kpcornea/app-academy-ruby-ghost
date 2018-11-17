@@ -2,27 +2,23 @@ require_relative "player"
 require "set"
 
 class Game
-  attr_reader :current_player, :fragment, :dictionary # keep :dict for now, maybe take out when playing
-  attr_writer :fragment # just for debuggin, get rid of this for final
+  attr_reader :current_player, :fragment
 
-  # def initialize(player1, player2)
   def initialize(players)
-    # @player1 = Player.new(player1)
-    # @player2 = Player.new(player2)
     @players = []
-    players.each_with_index do |player, i|
+    players.each do |player|
       @players << Player.new(player)
     end
-    # maybe make @players array for for than 2 players and iterate through to get next player
+
     @current_player = @players[0]
-    @previous_player = @players[1] # maybe don't need, will keep for now for multiplayer possibility
     @fragment = ""
+
     @dictionary = Set[]
     File.foreach("dictionary.txt") { |line| @dictionary.add(line.chomp) }
-    # @losses = { @player1.name => @player1.losses, @player2.name => @player2.losses }
+
     @losses = {}
     @players.each do |player|
-      @losses[player.name] = player.losses
+      @losses[player.name] = 0
     end
   end
 
@@ -63,8 +59,8 @@ class Game
   end
 
   def over?
-    if @losses.values.include?(5)
-      puts "#{@current_player.name} WINS IT ALL!!"
+    if @players.length == 1
+      puts "#{@players[0].name} WINS IT ALL!!"
       return true
     end
     false
@@ -76,23 +72,33 @@ class Game
     puts "enter a character #{@current_player.name}"
     take_turn(@current_player)
     puts "current fragment: #{@fragment}"
+
     if match?(@fragment)
       puts "#{@current_player.name} wins this round!"
-      @losses[@previous_player.name] += 1
-      puts "#{@current_player.name}'s progress towards GHOST: #{record(@current_player)}"
-      puts "#{@previous_player.name}'s progress towards GHOST: #{record(@previous_player)}"
+
+      @losses.each do |player, losses|
+        @losses[player] += 1 if player != @current_player.name && losses < 5
+      end
+
+      @losses.each_key do |player|
+        puts "#{player}'s progress towards GHOST: #{record(player)}"
+      end
+
       @fragment = ""
+      kick_losers!
     end
   end
 
   def record(player)
     str = "GHOST"
-    length = @losses[player.name]
+    length = @losses[player]
     str[0...length]
   end
 
-  # def run
-  #
-  # end
+  def kick_losers!
+    @players.select! do |player|
+      @losses[player.name] < 5
+    end
+  end
 
 end
