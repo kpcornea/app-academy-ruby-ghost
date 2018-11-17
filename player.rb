@@ -1,10 +1,11 @@
 class Player
   attr_reader :name, :losses, :wins
+  attr_writer :losses
 
   def initialize(name)
     @name = name
     @losses = 0
-    @wins = 0
+    # @wins = 0
   end
 
   def guess

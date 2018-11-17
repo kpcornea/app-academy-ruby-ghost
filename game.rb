@@ -14,13 +14,16 @@ class Game
     @fragment = ""
     @dictionary = Set[]
     File.foreach("dictionary.txt") { |line| @dictionary.add(line.chomp) }
+    @losses = { @player1.name => @player1.losses, @player2.name => @player2.losses }
   end
 
   def next_player!
     if @current_player == @player1
       @current_player = @player2
+      @previous_player = @player1
     else
       @current_player = @player1
+      @previous_player = @player2
     end
   end
 
@@ -56,11 +59,36 @@ class Game
   end
 
   def over?
-    if match?(@fragment)
-      puts "#{@current_player.name} wins!"
+    if @losses.values.include?(5)
+      puts "#{@current_player.name} WINS IT ALL!!"
       return true
     end
     false
   end
+
+  def play_round
+    next_player! unless @fragment == ""
+    puts "-------------"
+    puts "enter a character #{@current_player.name}"
+    take_turn(@current_player)
+    puts "current fragment: #{@fragment}"
+    if match?(@fragment)
+      puts "#{@current_player.name} wins this round!"
+      @losses[@previous_player.name] += 1
+      puts "#{@current_player.name}'s progress towards GHOST: #{record(@current_player)}"
+      puts "#{@previous_player.name}'s progress towards GHOST: #{record(@previous_player)}"
+      @fragment = ""
+    end
+  end
+
+  def record(player)
+    str = "GHOST"
+    length = @losses[player.name]
+    str[0...length]
+  end
+
+  # def run
+  #
+  # end
 
 end
