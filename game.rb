@@ -3,8 +3,8 @@ require "set"
 # require_relative "dictionary"
 
 class Game
-  attr_reader :current_player, :fragment
-
+  attr_reader :current_player, :fragment, :dictionary # keep :dict for now, maybe take out when playing
+  attr_writer :fragment # just for debuggin, get rid of this for final
   def initialize(player1, player2)
     @player1 = Player.new(player1)
     @player2 = Player.new(player2)
@@ -40,13 +40,25 @@ class Game
     false
   end
 
-  def valid_play?(str)
+  def valid_play?(char)
     alphabet = ("a".."z")
-    if alphabet.include?(str) && @dictionary # words we can spell after adding it to fragment, think i need array lookup for this one
-      return true
+    if !alphabet.include?(char.downcase)
+      puts "that's not a letter..."
+      return false
     end
+
+    cur_idx = @fragment.length
+    @dictionary.each do |word|
+      if word.include?(@fragment) && word[cur_idx] == char.downcase
+        return true
+      end
+    end
+
+    puts "try a different letter"
     false
   end
+
+  # def
 
   def match?(str)
     @dictionary === str
