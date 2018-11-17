@@ -8,11 +8,11 @@ player2 = gets.chomp
 
 
 ghost = Game.new(player1, player2)
-p ghost
-# # until game.over?
-#   puts "-------------"
-#   puts "enter a character"
-#   game.take_turn
-#   game.next_player!
-#   puts game.fragment
-# end
+# p ghost
+until ghost.over?
+  puts "-------------"
+  puts "enter a character #{ghost.current_player.name}"
+  ghost.take_turn(ghost.current_player)
+  ghost.next_player!
+  puts "current fragment: #{ghost.fragment}"
+end

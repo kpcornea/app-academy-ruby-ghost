@@ -1,5 +1,5 @@
 class Player
-  attr_reader :losses, :wins
+  attr_reader :name, :losses, :wins
 
   def initialize(name)
     @name = name
@@ -17,12 +17,12 @@ class Player
 
   def lost
     @losses += 1
-    puts "dam you suck :c"
+    puts "dam you suck #{@name} :c"
   end
 
   def won
     @wins += 1
-    puts "wow the other player must feel bad c:"
+    puts "gj #{@name} the other player must feel bad c:"
   end
-  
+
 end

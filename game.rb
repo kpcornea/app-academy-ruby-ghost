@@ -10,7 +10,7 @@ class Game
     @player2 = Player.new(player2)
     # maybe make @players array for for than 2 players and iterate through to get next player
     @current_player = @player1
-    @previous_player = @player2
+    @previous_player = @player2 # maybe don't need
     @fragment = ""
     @dictionary = Set[]
     File.foreach("dictionary.txt") { |line| @dictionary.add(line.chomp) }
@@ -33,12 +33,14 @@ class Game
   end
 
   def take_turn(player)
-    guess = gets.chomp # switch to Player class?
+    guess = gets.chomp # switch to Player class? they seem to have this in Game class. err they have take_turn in Game class but #guess in Player class. isn't it just gets.chomp? seems unnec
     if valid_play?(guess)
       @fragment += guess
-      return true
+      # self.over if match?(@fragment)
+      # return true
+    else
+      take_turn(player)
     end
-    false
   end
 
   def valid_play?(char)
@@ -76,9 +78,11 @@ class Game
   #
   # end
 
-  def over?(str) # param for this?
-    if match?(str) # like this or just if word is selected?
-      puts "#{@current_player} wins!"
+  def over? # param for this?
+    if match?(@fragment) # like this or just if word is selected?
+      puts "#{@current_player.name} wins!"
+      # @current_player.won
+      # @previous_player.lost
       return true
     end
     false
