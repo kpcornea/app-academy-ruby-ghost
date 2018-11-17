@@ -10,6 +10,7 @@ class Game
     @player2 = Player.new(player2)
     # maybe make @players array for for than 2 players and iterate through to get next player
     @current_player = @player1
+    @previous_player = @player2
     @fragment = ""
     @dictionary = Set[]
     File.foreach("dictionary.txt") { |line| @dictionary.add(line.chomp) }
@@ -24,7 +25,7 @@ class Game
   # end
 
   def next_player!
-    if @current_player = @player1
+    if @current_player == @player1
       @current_player = @player2
     else
       @current_player = @player1
@@ -57,8 +58,6 @@ class Game
     puts "try a different letter"
     false
   end
-
-  # def
 
   def match?(str)
     @dictionary === str
